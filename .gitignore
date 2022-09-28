@@ -1,0 +1,25 @@
+# FRONT
+# dependencies
+/stopclop_front/node_modules
+/stopclop_front/.pnp
+/stopclop_front*.pnp.js
+
+# testing
+/stopclop_front/coverage
+
+# production
+/stopclop_front/build
+
+# misc
+/stopclop_front/.DS_Store
+/stopclop_front/.env.local
+/stopclop_front/.env.development.local
+/stopclop_front/.env.test.local
+/stopclop_front/.env.production.local
+
+/stopclop_front/npm-debug.log*
+/stopclop_front/yarn-debug.log*
+/stopclop_front/yarn-error.log*
+
+# BACK
+# ...
