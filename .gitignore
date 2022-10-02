@@ -22,4 +22,4 @@
 /stopclop_front/yarn-error.log*
 
 # BACK
-# ...
+/stopclop_back/node_modules
