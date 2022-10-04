@@ -17,7 +17,7 @@ app.get('/data', (req, res) => {
 app.post('/test', (req, res) => {
   const password = '3relVJzJyVzsE6U/tJ2bBbQGpWI';
   const host = '51.15.234.81';
-  const port = '6380';
+  const port = 6380;
   const client = redis.createClient({
     socket: {
       host,

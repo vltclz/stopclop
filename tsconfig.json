@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src/",
+    "checkJs": true,
+    "jsx": "react-jsx",
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "exclude": ["./server.js", "./src/index.js"]
+}
