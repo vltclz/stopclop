@@ -8,15 +8,11 @@ import Cigarette from 'components/Cigarette';
 import SignIn from 'components/SignIn';
 import LangToggle from 'components/LangToggle';
 import Copyright from 'components/Copyright';
-import Stream from 'components/Stream';
+import Dashboard from 'components/Dashboard';
 
-type UserData = {
+export type UserData = {
   username: string;
   token: string;
-  stream: {
-    type: 'avoided' | 'smoked';
-    time: number;
-  }[];
 };
 
 export type UserDataState = UserData | 'pending';
@@ -48,7 +44,7 @@ const App = ({ toggleTheme }: { toggleTheme(): void }) => {
           {data === 'pending' ? (
             <SignIn setData={setData} />
           ) : (
-            <Stream setData={setData} />
+            <Dashboard data={data} setData={setData} />
           )}
           {!data && <Loader />}
         </div>
@@ -106,6 +102,7 @@ const app = (theme: Theme) => css`
   width: 100%;
   padding: 32px 24px;
   box-sizing: border-box;
+  gap: 0px;
 `;
 
 const footer = css`

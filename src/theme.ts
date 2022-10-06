@@ -10,6 +10,7 @@ export const themeDark: Theme = {
   middleFg: '#DCE0E3',
   almostFg: '#EFF2F5',
   fg: '#F7FAFD',
+  red: 'rgb(248,113,113)',
 };
 
 export const themeLight: Theme = {
@@ -22,6 +23,7 @@ export const themeLight: Theme = {
   middleBg: '#DCE0E3',
   almostBg: '#EFF2F5',
   bg: '#F7FAFD',
+  red: 'rgb(220,38,38)',
 };
 
 export type ThemeSetting = 'dark' | 'light';

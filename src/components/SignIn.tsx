@@ -37,7 +37,7 @@ const SignIn = ({
       })
       .then(({ status }) => {
         if (status === 204) {
-          setData({ username, token: md5(password), stream: [] });
+          setData({ username, token: md5(password) });
         }
       })
       .catch((err) => setErrorString(t('invalidCredentials')));
@@ -46,7 +46,7 @@ const SignIn = ({
 
   return (
     <div css={container(theme)}>
-      <div css={headline}>
+      <div css={headline(theme)}>
         <div>{t('welcome')}</div>
         <div>{t('welcomeSubtitle')}</div>
       </div>
@@ -103,7 +103,11 @@ const SignIn = ({
                 }}
                 disabled={isSelected && !canSubmit}
               >
-                {isLoading && isSelected ? <Loader inverted /> : t(m)}
+                {isLoading && isSelected ? (
+                  <Loader color={theme.almostBg} />
+                ) : (
+                  t(m)
+                )}
               </button>
             );
           })}
@@ -121,11 +125,12 @@ const container = (theme: Theme) => css`
   gap: 40px;
 `;
 
-const headline = css`
+const headline = (theme: Theme) => css`
   display: flex;
   flex-direction: column;
   gap: 8px;
   font-size: 26px;
+  color: ${theme.almostFg};
 
   & div:first-of-type {
     font-weight: 700;
@@ -190,6 +195,7 @@ const button = (theme: Theme, selected: boolean) => css`
   font-weight: 600;
   position: relative;
   z-index: 1;
+  cursor: pointer;
 `;
 
 const error = (theme: Theme) => css`

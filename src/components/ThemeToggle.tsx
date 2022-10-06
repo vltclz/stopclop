@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, Theme, useTheme } from '@emotion/react';
+import useFavIconSwitch from 'hooks/useFavIconSwitch';
 import { useEffect, useState } from 'react';
 import { getLocalThemeSetting, isDarkTheme } from 'theme';
 
@@ -8,10 +9,12 @@ const ThemeToggle = ({ toggleTheme }: { toggleTheme(): void }) => {
   const [isDark, setIsDarkTheme] = useState(
     isDarkTheme(getLocalThemeSetting())
   );
+  const { favIconSwitch } = useFavIconSwitch();
 
   useEffect(() => {
     setIsDarkTheme(isDarkTheme(getLocalThemeSetting()));
-  }, [theme]);
+    favIconSwitch(getLocalThemeSetting());
+  }, [favIconSwitch, theme]);
 
   return <div css={toggle(theme, isDark)} onClick={toggleTheme} />;
 };

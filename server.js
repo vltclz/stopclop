@@ -9,10 +9,10 @@ app.use(express.json());
 const HTTP_PORT = 8080;
 const client = redis.createClient({
   socket: {
-    host: process.env.HOST,
-    port: process.env.PORT,
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
   },
-  password: process.env.PASSWORD,
+  password: process.env.REDIS_PASSWORD,
 });
 client.connect();
 
@@ -51,6 +51,43 @@ app.post('/signin', async (req, res) => {
     if (password !== userPassword) return res.status(400).json();
 
     return res.status(204).json();
+  } catch (err) {
+    return res.status(500).json(err.toString());
+  }
+});
+
+app.get('/:username/stream', async (req, res) => {
+  try {
+    const userToken = await client.get(`password.${req.params.username}`);
+    if (!userToken) return res.status(400).json();
+    if (userToken !== req.headers.authorization) return res.status(403).json();
+
+    const stream = await client.xRange(
+      `stream.${req.params.username}`,
+      '-',
+      '+'
+    );
+    return res.status(200).json(stream);
+  } catch (err) {
+    return res.status(500).json(err.toString());
+  }
+});
+
+app.post('/:username/stream/:type', async (req, res) => {
+  try {
+    const userToken = await client.get(`password.${req.params.username}`);
+    if (!userToken) return res.status(400).json();
+    if (userToken !== req.headers.authorization) return res.status(403).json();
+
+    await client.xAdd(`stream.${req.params.username}`, '*', {
+      type: req.params.type,
+    });
+    const stream = await client.xRange(
+      `stream.${req.params.username}`,
+      '-',
+      '+'
+    );
+    return res.status(200).json(stream);
   } catch (err) {
     return res.status(500).json(err.toString());
   }
