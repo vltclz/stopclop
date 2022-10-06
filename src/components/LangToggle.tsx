@@ -11,6 +11,7 @@ const LangToggle = () => {
         const selected = language === i18n.language;
         return (
           <div
+            key={language}
             css={option(theme, selected)}
             onClick={() => !selected && i18n.changeLanguage(language)}
           >

@@ -1,6 +1,13 @@
 {
     "common": {
-        "welcome": "Hi young idiot.",
-        "welcomeSubtitle": "You're lucky to be here"
+        "welcome": "Want to quit smoking?",
+        "welcomeSubtitle": "It's simple, just stop.",
+        "username": "Username",
+        "password": "Password",
+        "entryKey": "Entry key",
+        "register": "Register",
+        "signin": "Sign In",
+        "fieldMissing": "Please fill all field",
+        "invalidCredentials": "Invalid credentials"
     }
 }

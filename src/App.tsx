@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import Loader from 'components/Loader';
 import { css, Theme, useTheme } from '@emotion/react';
 import ThemeToggle from 'components/ThemeToggle';
@@ -9,20 +8,30 @@ import Cigarette from 'components/Cigarette';
 import SignIn from 'components/SignIn';
 import LangToggle from 'components/LangToggle';
 import Copyright from 'components/Copyright';
+import Stream from 'components/Stream';
+
+type UserData = {
+  username: string;
+  token: string;
+  stream: {
+    type: 'avoided' | 'smoked';
+    time: number;
+  }[];
+};
+
+export type UserDataState = UserData | 'pending';
 
 const App = ({ toggleTheme }: { toggleTheme(): void }) => {
   const theme = useTheme();
-  const [data, setData] = useState();
+  const [data, setData] = useState<UserDataState>();
 
   useEffect(() => {
-    const fetch = async () => {
-      const response = await axios.get(
-        `${process.env.REACT_APP_BACK_URL}/data`
-      );
-      setData(response.data);
-    };
-    fetch();
-  }, []);
+    if (!data) {
+      setData(JSON.parse(localStorage.getItem('localData')) || 'pending');
+    } else {
+      localStorage.setItem('localData', JSON.stringify(data));
+    }
+  }, [data]);
 
   return (
     <div css={fullContainerStyle(theme)}>
@@ -35,7 +44,14 @@ const App = ({ toggleTheme }: { toggleTheme(): void }) => {
           <div css={name}>stopclop</div>
           <ThemeToggle toggleTheme={toggleTheme} />
         </div>
-        <div css={app}>{data ? <SignIn /> : <Loader />}</div>
+        <div css={app}>
+          {data === 'pending' ? (
+            <SignIn setData={setData} />
+          ) : (
+            <Stream setData={setData} />
+          )}
+          {!data && <Loader />}
+        </div>
         <div css={footer}>
           <Copyright />
           <LangToggle />

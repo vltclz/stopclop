@@ -1,6 +1,13 @@
 {
     "common": {
-        "welcome": "Bonjour jeune cancéreux.",
-        "welcomeSubtitle": "Tu as de la chance d'être là"
+        "welcome": "Envie d'arrêter de fumer?",
+        "welcomeSubtitle": "Bah c'est simple, arrête.",
+        "username": "Nom d'utilisateur",
+        "password": "Mot de passe",
+        "entryKey": "Clé d'entrée",
+        "register": "S'inscrire",
+        "signin": "Se connecter",
+        "fieldMissing": "Il faut remplir tous les champs",
+        "invalidCredentials": "Identifiants invalides"
     }
 }
