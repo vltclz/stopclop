@@ -49,8 +49,12 @@ app.post('/signin', async (req, res) => {
     const { username, password } = req.body;
     const userPassword = await client.get(`password.${username}`);
     if (password !== userPassword) return res.status(400).json();
+    const defaultSettings = await client.json.get('defaultsettings', '.');
+    const ownSettings = await client.json.get(`settings.${username}`, '.');
 
-    return res.status(204).json();
+    return res
+      .status(200)
+      .json({ settings: { ...defaultSettings, ...(ownSettings || {}) } });
   } catch (err) {
     return res.status(500).json(err.toString());
   }
@@ -88,6 +92,20 @@ app.post('/:username/stream/:type', async (req, res) => {
       '+'
     );
     return res.status(200).json(stream);
+  } catch (err) {
+    return res.status(500).json(err.toString());
+  }
+});
+
+app.post('/:username/settings', async (req, res) => {
+  try {
+    const { price, capacity, cooldown } = req.body;
+    const changedSettings = { price, capacity, cooldown };
+    const defaultSettings = await client.json.get('defaultsettings', '.');
+    const newSettings = { ...defaultSettings, ...changedSettings };
+    await client.json.set(`settings.${req.params.username}`, '.', newSettings);
+
+    return res.status(200).json({ settings: newSettings });
   } catch (err) {
     return res.status(500).json(err.toString());
   }

@@ -31,9 +31,15 @@
         "congratsTitle": "Congrats 👏",
         "congratsContent1": "I have to say, you're smarter than I thought.",
         "congratsContent2": "Plus you just saved {{saved}} €.",
-        "bouhTitle": "Seriously 🤦‍♂️",
-        "bouhContent1": "You're such an idiot, I hope you'll be proud of your bad breath.",
-        "bouhContent2": "The last one you smoked was {{last}} ago, all that effort for nothing…",
-        "seeRules": "See rules again"
+        "booTitle": "Seriously 🤦‍♂️",
+        "booContent1": "You're such an idiot, I hope you'll be proud of your bad breath.",
+        "booContent2": "The last one you smoked was {{last}} ago, all that effort for nothing…",
+        "seeRules": "See rules again",
+        "settings": "Settings",
+        "save": "Save",
+        "cancel": "Cancel",
+        "price": "Pack price",
+        "capacity": "Pack capacity",
+        "cooldown": "Cooldown time"
     }
 }

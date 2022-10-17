@@ -26,14 +26,20 @@
         "rulesTitle": "Règles du jeu",
         "rulesContent1": "Quand l'envie d'une clope se fait ressentir, t'as deux choix.",
         "rulesContent2": "Soit t'es une grosse merde et tu la fumes, soit tu économises ton argent et tes poumons.",
-        "rulesContent3": "Dans les deux cas, le choix que tu fais dois être inscrit dans cette app.",
-        "rulesContent4": "Il est impossible de toucher à une cigarette pendant les 30 minutes qui suivent ton choix.",
+        "rulesContent3": "Dans les deux cas, le choix que tu fais doit être inscrit dans cette app.",
+        "rulesContent4": "Il est interdit de toucher à une cigarette pendant les 30 minutes qui suivent ton choix.",
         "congratsTitle": "Bravo 🥰",
         "congratsContent1": "Franchement t'es plus intelligent que ce que je pensais, je t'ai sous-estimé.",
         "congratsContent2": "Tu viens d'économiser {{saved}} € en plus.",
-        "bouhTitle": "Sérieusement 🤦‍♂️",
-        "bouhContent1": "J'espère que t'es content avec ta mauvaise haleine et tes doigts qui puent.",
-        "bouhContent2": "La dernière que t'as fumé c'était il y a {{last}}, tous ces efforts pour rien…",
-        "seeRules": "Voir les règles"
+        "booTitle": "Sérieusement 🤦‍♂️",
+        "booContent1": "J'espère que t'es content avec ta mauvaise haleine et tes doigts qui puent.",
+        "booContent2": "La dernière que t'as fumé c'était il y a {{last}}, tous ces efforts pour rien…",
+        "seeRules": "Voir les règles",
+        "settings": "Réglages",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "price": "Prix du paquet",
+        "capacity": "Cigarettes par paquet",
+        "cooldown": "Temps de pause"
     }
 }

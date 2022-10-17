@@ -11,8 +11,8 @@ const useFavIconSwitch = () => {
     const switchTo =
       current ||
       (window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light');
+        ? ThemeSetting.DARK
+        : ThemeSetting.LIGHT);
     favicon.href = `/${switchTo}-favicon.ico`;
     manifest.href = `/${switchTo}-manifest.json`;
     appleIcon.href = `/${switchTo}.png`;

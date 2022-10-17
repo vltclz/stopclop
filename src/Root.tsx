@@ -15,7 +15,9 @@ const Root = () => {
     getLocalThemeSetting()
   );
   const toggleTheme = useCallback(() => {
-    const newSetting = isDarkTheme(themeSetting) ? 'light' : 'dark';
+    const newSetting = isDarkTheme(themeSetting)
+      ? ThemeSetting.LIGHT
+      : ThemeSetting.DARK;
     setThemeSetting(newSetting);
     localStorage.setItem(themeSettingKey, newSetting);
   }, [themeSetting]);

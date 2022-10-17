@@ -1,28 +1,26 @@
 /** @jsxImportSource @emotion/react */
 import { css, Theme, useTheme } from '@emotion/react';
+import localDataAtom from 'atoms/localDataAtom';
+import useCigStream, { CigType } from 'hooks/useCigStream';
+import { useRecoilState } from 'recoil';
 import Cigarette from './Cigarette';
-import { StreamArray, ElementType } from './Dashboard';
 import Pack from './Pack';
 
-const Stream = ({
-  stream,
-  filter,
-}: {
-  stream: StreamArray;
-  filter: ElementType;
-}) => {
+const CigStream = ({ filter }: { filter: CigType }) => {
   const theme = useTheme();
-  const filtered = stream.filter(({ type }) => type === filter);
-  const packs = Math.floor(filtered.length / 20);
-  const cigarettes = filtered.length % 20;
-  const smoked = filter === 'smoked';
+  const { cigStream } = useCigStream();
+  const [localData] = useRecoilState(localDataAtom);
+  const filtered = cigStream.filter(({ type }) => type === filter);
+  const packs = Math.floor(filtered.length / localData.settings.capacity);
+  const cigarettes = filtered.length % localData.settings.capacity;
+  const smoked = filter === CigType.SMOKED;
 
   return (
     <div css={container(theme)}>
       <Pack
         height={40}
         color={packs === 0 ? theme.middleBg : smoked && theme.red}
-        number={packs || undefined}
+        count={packs || undefined}
       />
       {[...Array(cigarettes)].map((_, i) => (
         <Cigarette
@@ -31,7 +29,7 @@ const Stream = ({
           color={smoked && theme.red}
         />
       ))}
-      {[...Array(20 - cigarettes)].map((_, i) => (
+      {[...Array(localData.settings.capacity - cigarettes)].map((_, i) => (
         <Cigarette
           key={`invisible-${filter}-${i}`}
           height={40}
@@ -48,4 +46,4 @@ const container = (theme: Theme) => css`
   justify-content: space-between;
 `;
 
-export default Stream;
+export default CigStream;

@@ -1,6 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { useEffect, useState } from 'react';
-import Loader from 'components/Loader';
 import { css, Theme, useTheme } from '@emotion/react';
 import ThemeToggle from 'components/ThemeToggle';
 import Pack from 'components/Pack';
@@ -9,25 +7,12 @@ import SignIn from 'components/SignIn';
 import LangToggle from 'components/LangToggle';
 import Copyright from 'components/Copyright';
 import Dashboard from 'components/Dashboard';
-
-export type UserData = {
-  username: string;
-  token: string;
-};
-
-export type UserDataState = UserData | 'pending';
+import { useRecoilState } from 'recoil';
+import localDataAtom from 'atoms/localDataAtom';
 
 const App = ({ toggleTheme }: { toggleTheme(): void }) => {
   const theme = useTheme();
-  const [data, setData] = useState<UserDataState>();
-
-  useEffect(() => {
-    if (!data) {
-      setData(JSON.parse(localStorage.getItem('localData')) || 'pending');
-    } else {
-      localStorage.setItem('localData', JSON.stringify(data));
-    }
-  }, [data]);
+  const [localData] = useRecoilState(localDataAtom);
 
   return (
     <div css={fullContainerStyle(theme)}>
@@ -40,14 +25,7 @@ const App = ({ toggleTheme }: { toggleTheme(): void }) => {
           <div css={name}>stopclop</div>
           <ThemeToggle toggleTheme={toggleTheme} />
         </div>
-        <div css={app}>
-          {data === 'pending' ? (
-            <SignIn setData={setData} />
-          ) : (
-            <Dashboard data={data} setData={setData} />
-          )}
-          {!data && <Loader />}
-        </div>
+        <div css={app}>{localData.username ? <Dashboard /> : <SignIn />}</div>
         <div css={footer}>
           <Copyright />
           <LangToggle />
@@ -70,6 +48,7 @@ const appContainerStyle = css`
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: hidden;
 `;
 
 const header = css`

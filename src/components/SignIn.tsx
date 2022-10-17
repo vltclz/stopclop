@@ -5,14 +5,10 @@ import { useCallback, useMemo, useState } from 'react';
 import md5 from 'md5';
 import { useTranslation } from 'react-i18next';
 import Loader from './Loader';
-import { UserDataState } from 'App';
-import { Dispatch, SetStateAction } from 'react';
+import { useRecoilState } from 'recoil';
+import localDataAtom from 'atoms/localDataAtom';
 
-const SignIn = ({
-  setData,
-}: {
-  setData: Dispatch<SetStateAction<UserDataState>>;
-}) => {
+const SignIn = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const [mode, setMode] = useState<'register' | 'signin'>('register');
@@ -21,6 +17,7 @@ const SignIn = ({
   const [entryKey, setEntryKey] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorString, setErrorString] = useState('');
+  const [, setLocalData] = useRecoilState(localDataAtom);
 
   const canSubmit = useMemo(
     () => !!username && !!password && (!!entryKey || mode === 'signin'),
@@ -35,14 +32,14 @@ const SignIn = ({
         password: md5(password),
         entryKey: mode === 'register' ? entryKey : undefined,
       })
-      .then(({ status }) => {
-        if (status === 204) {
-          setData({ username, token: md5(password) });
+      .then(({ status, data }) => {
+        if (status === 200) {
+          setLocalData({ username, token: md5(password), ...data });
         }
       })
       .catch((err) => setErrorString(t('invalidCredentials')));
     setIsLoading(false);
-  }, [entryKey, mode, password, setData, t, username]);
+  }, [entryKey, mode, password, setLocalData, t, username]);
 
   return (
     <div css={container(theme)}>

@@ -1,38 +1,45 @@
 /** @jsxImportSource @emotion/react */
 import { css, useTheme } from '@emotion/react';
 
+export const RADIUS_MULTIPLIER = 0.05;
+const WIDTH_MULTIPLIER = 0.7;
+const LID_POSITION_MULTIPLIER = 0.25;
+const LID_HEIGHT_MULTIPLIER = 0.05;
+
 const Pack = ({
   height,
   color,
-  number,
+  count,
 }: {
   height: number;
   color?: string;
-  number?: number;
+  count?: number;
 }) => {
   const theme = useTheme();
   return (
     <div
       css={css`
         height: ${height}px;
-        width: ${height * 0.71}px;
+        width: ${height * WIDTH_MULTIPLIER}px;
         background: ${color || theme.almostFg};
         position: relative;
-        border-radius: ${height * 0.05}px;
+        border-radius: ${height * RADIUS_MULTIPLIER}px;
 
+        // "Lid" separator
         &::before {
           content: '';
           position: absolute;
-          top: ${height * 0.25}px;
+          top: ${height * LID_POSITION_MULTIPLIER}px;
           left: 0px;
-          height: ${height * 0.05}px;
+          height: ${height * LID_HEIGHT_MULTIPLIER}px;
           width: 100%;
           background: ${theme.almostBg};
           transition: background 200ms ease-in-out;
         }
 
+        // Optional count overlay
         &::after {
-          content: '${number}';
+          content: '${count}';
           position: absolute;
           top: 50%;
           left: 50%;

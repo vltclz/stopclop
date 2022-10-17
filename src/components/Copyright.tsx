@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-
 import { css, useTheme } from '@emotion/react';
 
 const Copyright = () => {

@@ -26,12 +26,15 @@ export const themeLight: Theme = {
   red: 'rgb(220,38,38)',
 };
 
-export type ThemeSetting = 'dark' | 'light';
+export enum ThemeSetting {
+  LIGHT = 'light',
+  DARK = 'dark',
+}
 
 export const themeSettingKey = 'themeSetting';
 
-export const getLocalThemeSetting = (): ThemeSetting | null =>
-  (localStorage.getItem(themeSettingKey) as ThemeSetting | null) || 'light';
+export const getLocalThemeSetting = (): ThemeSetting =>
+  (localStorage.getItem(themeSettingKey) as ThemeSetting) || ThemeSetting.LIGHT;
 
 export const isDarkTheme = (themeSetting: ThemeSetting) =>
-  themeSetting === 'dark';
+  themeSetting === ThemeSetting.DARK;
