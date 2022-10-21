@@ -179,22 +179,29 @@ const MainContainer = ({
         </button>
       </div>
       <div css={secondaryLinks(theme)}>
-        <div
-          onClick={() => {
-            setShowSettings(true);
-          }}
-        >
-          {t('settings')}
+        <div css={swipeLinksContainer}>
+          <div
+            role="button"
+            onClick={() => {
+              setMessage(rulesMessage);
+              setShowMessage(true);
+            }}
+          >
+            {'< '}
+            {t('seeRules')}
+          </div>
+          <div
+            role="button"
+            onClick={() => {
+              setShowSettings(true);
+            }}
+          >
+            {t('settings')}
+            {' >'}
+          </div>
         </div>
         <div
-          onClick={() => {
-            setMessage(rulesMessage);
-            setShowMessage(true);
-          }}
-        >
-          {t('seeRules')}
-        </div>
-        <div
+          role="button"
           onClick={() => {
             setLocalData({});
             setCigStream(null);
@@ -247,9 +254,15 @@ const secondaryLinks = (theme: Theme) => css`
   flex-direction: column;
   gap: 16px;
 
-  & div {
+  [role='button'] {
     cursor: pointer;
   }
+`;
+
+const swipeLinksContainer = css`
+  display: flex;
+  justify-content: center;
+  gap: 24px;
 `;
 
 export default MainContainer;
