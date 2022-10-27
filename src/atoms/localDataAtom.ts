@@ -9,11 +9,9 @@ type UserData = {
   settings?: Settings;
 };
 
-const defaultAtom: UserData = {};
-
 const localDataAtom = atom<UserData>({
   key: 'localData',
-  default: defaultAtom,
+  default: {},
   effects_UNSTABLE: [persistAtom],
 });
 

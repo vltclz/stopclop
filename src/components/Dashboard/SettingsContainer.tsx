@@ -8,6 +8,7 @@ import {
   Dispatch,
   SetStateAction,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -25,11 +26,12 @@ enum SettingKey {
 
 export type Settings = Record<SettingKey, number>;
 
-type SettingSpecs = {
+type SettingAttributes = {
   key: SettingKey;
   min: number;
   max: number;
   step: number;
+  suffix?: string;
 };
 
 const SettingsContainer = ({
@@ -42,26 +44,58 @@ const SettingsContainer = ({
   const theme = useTheme();
   const { t } = useTranslation();
   const [localData, setLocalData] = useRecoilState(localDataAtom);
-  const [settingsState, setSettingsState] = useState<Settings>(
+  const [modifiedSettings, setModifiedSettings] = useState<Settings>(
     localData.settings
   );
   const [isLoading, setIsLoading] = useState(false);
 
-  const setSettingState = useCallback(
-    (props: SettingSpecs & { value: number }) => {
-      const { key, min, max, value } = props;
+  useEffect(() => {
+    if (showSettings) setModifiedSettings(localData.settings);
+  }, [localData.settings, showSettings]);
+
+  const varySetting = useCallback(
+    ({
+      key,
+      min,
+      max,
+      step,
+      action,
+    }: SettingAttributes & { action: 'increment' | 'decrement' }) => {
+      const value =
+        Math.round(
+          (modifiedSettings[key] + (action === 'increment' ? step : -step)) *
+            1e2
+        ) / 1e2;
       if (min <= value && value <= max) {
-        setSettingsState({ ...settingsState, [key]: value });
+        setModifiedSettings({ ...modifiedSettings, [key]: value });
       }
     },
-    [settingsState]
+    [modifiedSettings]
   );
 
-  const settings: SettingSpecs[] = useMemo(
+  const setSetting = useCallback(
+    ({
+      key,
+      min,
+      max,
+      inputValue,
+    }: SettingAttributes & { inputValue: number }) => {
+      const value =
+        isNaN(inputValue) || inputValue <= min
+          ? min
+          : inputValue >= max
+          ? max
+          : inputValue;
+      setModifiedSettings({ ...modifiedSettings, [key]: value });
+    },
+    [modifiedSettings]
+  );
+
+  const settingsAttributes: SettingAttributes[] = useMemo(
     () => [
-      { key: SettingKey.PRICE, min: 2, max: 30, step: 0.1 },
+      { key: SettingKey.PRICE, min: 2, max: 30, step: 0.1, suffix: '€' },
       { key: SettingKey.CAPACITY, min: 10, max: 150, step: 5 },
-      { key: SettingKey.COOLDOWN, min: 1, max: 60, step: 1 },
+      { key: SettingKey.COOLDOWN, min: 1, max: 60, step: 1, suffix: 'min' },
     ],
     []
   );
@@ -71,7 +105,7 @@ const SettingsContainer = ({
     await axios
       .post(
         `${process.env.REACT_APP_BACK_URL}/${localData.username}/settings`,
-        settingsState
+        modifiedSettings
       )
       .then(({ status, data }) => {
         if (status === 200) {
@@ -82,57 +116,68 @@ const SettingsContainer = ({
         throw new Error(err);
       });
     setIsLoading(false);
-  }, [localData, setLocalData, settingsState]);
+  }, [localData, setLocalData, modifiedSettings]);
 
   return (
     <div css={styles.container('right', showSettings)}>
-      {settings.map((specs) => (
-        <div key={specs.key}>
-          <label css={label(theme)}>{t(specs.key)}</label>
-          <div css={inputContainer}>
-            <div
-              role="button"
-              onClick={() =>
-                setSettingState({
-                  ...specs,
-                  value:
-                    Math.round((settingsState[specs.key] - specs.step) * 1e2) /
-                    1e2,
-                })
-              }
-            >
-              <Minus height={25} />
-            </div>
-            <input
-              css={input(theme)}
-              type="number"
-              min={specs.min}
-              max={specs.max}
-              step={specs.step}
-              value={settingsState[specs.key]}
-              onChange={(e) =>
-                setSettingState({
-                  ...specs,
-                  value: Math.round(parseFloat(e.target.value) * 1e2) / 1e2,
-                })
-              }
-            />
-            <div
-              role="button"
-              onClick={() =>
-                setSettingState({
-                  ...specs,
-                  value:
-                    Math.round((settingsState[specs.key] + specs.step) * 1e2) /
-                    1e2,
-                })
-              }
-            >
-              <Plus height={25} />
+      {settingsAttributes.map((settingAttributes) => {
+        const { key, min, max, step, suffix } = settingAttributes;
+        const decrementDisabled = modifiedSettings[key] === min;
+        const incrementDisabled = modifiedSettings[key] === max;
+        return (
+          <div key={key}>
+            <label css={label(theme)}>{t(key)}</label>
+            <div css={inputContainer}>
+              <button
+                onClick={() =>
+                  varySetting({
+                    ...settingAttributes,
+                    action: 'decrement',
+                  })
+                }
+                disabled={decrementDisabled}
+              >
+                <Minus
+                  color={decrementDisabled ? theme.bitBg : theme.almostFg}
+                  height={25}
+                />
+              </button>
+              <div css={inputSuffixContainer}>
+                <input
+                  css={input(theme)}
+                  type="number"
+                  min={min}
+                  max={max}
+                  step={step}
+                  value={modifiedSettings[key]}
+                  onChange={(e) =>
+                    setSetting({
+                      ...settingAttributes,
+                      inputValue:
+                        Math.round(parseFloat(e.target.value) * 1e2) / 1e2,
+                    })
+                  }
+                />
+                <span css={suffixSpan(theme)}>{suffix}</span>
+              </div>
+              <button
+                onClick={() =>
+                  varySetting({
+                    ...settingAttributes,
+                    action: 'increment',
+                  })
+                }
+                disabled={incrementDisabled}
+              >
+                <Plus
+                  color={incrementDisabled ? theme.bitBg : theme.almostFg}
+                  height={25}
+                />
+              </button>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
 
       <div css={styles.actionsContainer(theme)}>
         <button
@@ -141,7 +186,7 @@ const SettingsContainer = ({
             onSubmit();
             setShowSettings(false);
           }}
-          disabled={lodash.isEqual(localData.settings, settingsState)}
+          disabled={lodash.isEqual(localData.settings, modifiedSettings)}
         >
           {isLoading ? <Loader /> : t('save')}
         </button>
@@ -164,9 +209,26 @@ const inputContainer = css`
   justify-content: center;
   width: 100%;
 
-  [role='button'] {
+  button {
+    all: unset;
     cursor: pointer;
+
+    &:disabled {
+      cursor: auto;
+    }
   }
+`;
+
+const inputSuffixContainer = css`
+  width: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  font-size: 22px;
+`;
+
+const suffixSpan = (theme: Theme) => css`
+  color: ${theme.almostFg};
 `;
 
 const label = (theme: Theme) => css`
@@ -180,7 +242,7 @@ const input = (theme: Theme) => css`
   all: unset;
   font-size: 22px;
   font-weight: 700;
-  width: 250px;
+  width: fit-content;
   color: ${theme.almostFg};
   transition: color 200ms ease-in-out;
 
